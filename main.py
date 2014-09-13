@@ -12,20 +12,14 @@ from console import *
 player = Player()
 
 # -- init items --
-item_key = Item("strange key", True,
+item_key = Item("key", True,
 "A small, black metal key with a twisted shape. When you hold it "
 "up to the light at the right angle, it seems to give off a dark, "
 "blood-red glow.")
-item_sword = Item("iron sword", True,
+item_sword = Item("sword", True,
 "A common weapon carried by human adventurers. "
 "You have no need for weapons, and the blade is dull and chipped. "
 "It could be useful for something else, though.")
-item_treasure  = Item("pile of treasure", False,
-"A massive pile of a shiny yellow coins and sparkling jewels. "
-"Why so many unlucky adventurers have barged in here and met "
-"their deaths attempting to steal it, you will never understand. "
-"Also, the coins have become melted into one solid mass by the "
-"fire, making it impossible to carry.")
 # -- end items --
 
 # -- init events --
@@ -218,3 +212,6 @@ while player.dead == False:
 # -- end main loop --
 
 cons.say("Thanks for playing!")
+
+# keep window open for ide
+input("\r\nPress any key to continue")
