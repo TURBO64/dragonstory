@@ -141,12 +141,12 @@ while player.dead == False:
         player.room = world[player.y][player.x]
         # auto look
         cons.describe(player.room)
-        # reset player deltas
-        player.dx, player.dy = 0, 0
       else:
         cons.say("You can't go that way.")
     else:
       cons.say("You can't go that way.")
+  # reset player deltas
+  player.dx, player.dy = 0, 0
 
   # run any room events
   if player.room.events:
