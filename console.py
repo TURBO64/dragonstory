@@ -2,7 +2,6 @@ import textwrap
 import colorama
 
 class Console:
-  # init parser
   def __init__(self):
     # enable win32 color compatibility
     colorama.init()
@@ -19,7 +18,13 @@ class Console:
     self.cyan   = '\033[1;36m' # cyan
     self.reset  = '\033[0m'    # reset
     # -- end of colors
-  
+
+  # parse user input
+  def parse(self, string):
+    words = string.split()
+    self.verb = words[0]  # what to do
+    self.subj = words[-1] # what to do it on
+
   # print a formatted string
   def say(self, newmsg, color=None):    
     fmsg = textwrap.dedent(textwrap.fill(newmsg))

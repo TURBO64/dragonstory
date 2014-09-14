@@ -173,37 +173,52 @@ while player.dead == False:
   # handle input (if player is alive)
   if player.dead == False:
     cmd = input("> ").lower()
+    cons.parse(cmd)
 
     # -- begin command list --
-    if cmd in ["look", "l"]:
-      cons.describe(player.room)
-    elif cmd in ["take", "get"]:
-      player.take()
-      cons.say("OK.")
-    elif cmd in ["inv", "inventory"]:
+
+    if cons.verb in ["look", "l", "examine", "exa"]:
+      if cons.subj != cons.verb:
+        for item in player.room.items:
+          if cons.subj in item.name:
+            cons.describe(item)
+      else:
+        cons.describe(player.room)
+    elif cons.verb in ["inv", "inventory"]:
       cons.say("You are carrying: ")
       if player.items:
         for item in player.items:
           cons.say(item.name)
       else:
         cons.say("Nothing.") 
-    elif cmd in ["north", "n"]:
+    elif cons.subj in ["north", "n"]:
       player.dx, player.dy = 0, -1
-    elif cmd in ["south", "s"]:
+    elif cons.subj in ["south", "s"]:
       player.dx, player.dy = 0, 1
-    elif cmd in ["west", "w"]:
+    elif cons.subj in ["west", "w"]:
       player.dx, player.dy = -1, 0
-    elif cmd in ["east", "e"]:
+    elif cons.subj in ["east", "e"]:
       player.dx, player.dy = 1, 0
-    elif cmd in ["quit", "q", "exit"]:
+    elif cons.verb in ["fly", "jump"]:
+      if player.room is room2:
+        cons.say("You fly across the chasm...")
+        cons.say("")
+        player.dy = -2
+      elif player.room is room4:
+        cons.say("You fly across the chasm...")
+        cons.say("")
+        player.dy = 2
+      else:
+        cons.say("There's no reason to do that now.")
+    elif cons.verb in ["quit", "q", "exit"]:
       player.dead = True
-    elif cmd in ["help", "h", "?"]:
+    elif cons.verb in ["help", "h", "?"]:
       cons.say("Commands:")
       cons.say("(n)orth, (s)outh, (w)est, (e)ast - move around")
       cons.say("(l)ook - examine things")
       cons.say("(q)uit - quit the game")
       cons.say("(h)elp - display this list")
-    elif cmd in ["pos", "position"]:
+    elif cons.verb in ["pos", "position"]:
       cons.say(str(player.x) + ", " + str(player.y) )
     else:
       cons.say("I don't understand that.")

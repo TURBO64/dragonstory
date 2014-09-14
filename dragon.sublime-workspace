@@ -11,7 +11,26 @@
 			"file": "main.py",
 			"settings":
 			{
-				"buffer_size": 6874,
+				"buffer_size": 6695,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "player.py",
+			"settings":
+			{
+				"buffer_size": 336,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "class Room:\n  def __init__(self, name, x, y, items, events, descr):\n    self.name = name\n    self.x, self.y = x, y\n\n      },\n\n    }\n  def run_events(self):\n    for x in events:\n      if x.flag == False:\n        x.trigger()\n",
+			"file": "room.py",
+			"file_size": 277,
+			"file_write_time": 130550537060991218,
+			"settings":
+			{
+				"buffer_size": 223,
 				"line_ending": "Unix"
 			}
 		},
@@ -19,7 +38,7 @@
 			"file": "console.py",
 			"settings":
 			{
-				"buffer_size": 1140,
+				"buffer_size": 1282,
 				"line_ending": "Unix"
 			}
 		},
@@ -36,22 +55,6 @@
 			"settings":
 			{
 				"buffer_size": 148,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "player.py",
-			"settings":
-			{
-				"buffer_size": 336,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "room.py",
-			"settings":
-			{
-				"buffer_size": 277,
 				"line_ending": "Unix"
 			}
 		}
@@ -110,7 +113,7 @@
 	],
 	"find":
 	{
-		"height": 21.0
+		"height": 34.0
 	},
 	"find_in_files":
 	{
@@ -124,6 +127,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"input",
 			"describe_room",
 			"room_ca",
 			"describe.",
@@ -209,7 +213,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 2,
 			"sheets":
 			[
 				{
@@ -218,15 +222,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6874,
+						"buffer_size": 6695,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								6874,
-								6874
+								1120,
+								1120
 							]
 						],
 						"settings":
@@ -236,100 +240,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "console.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1140,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 325.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
-					"file": "event.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 158,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "item.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 148,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
+					"buffer": 1,
 					"file": "player.py",
 					"semi_transient": false,
 					"settings":
@@ -355,16 +273,76 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 2,
 					"file": "room.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 277,
+						"buffer_size": 223,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								115,
+								115
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "console.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1282,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								589,
+								589
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "event.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 158,
 						"regions":
 						{
 						},
@@ -377,15 +355,41 @@
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/Python/Python.tmLanguage"
 						},
-						"translation.x": -0.0,
+						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "item.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 148,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
 					"type": "text"
 				}
 			]
