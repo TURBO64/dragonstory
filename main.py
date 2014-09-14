@@ -184,11 +184,19 @@ while player.dead == False:
             cons.describe(item)
       else:
         cons.describe(player.room)
+    elif cons.verb in ["take", "get"]:
+      if player.room.items:
+        for item in player.room.items:
+          player.items.append(item)
+          player.room.items.remove(item)
+          cons.say("Taken.")
+      else:
+        cons.say("There is nothing here you can carry.")
     elif cons.verb in ["inv", "inventory"]:
       cons.say("You are carrying: ")
       if player.items:
         for item in player.items:
-          cons.say(item.name)
+          cons.say("a " + item.name)
       else:
         cons.say("Nothing.") 
     elif cons.subj in ["north", "n"]:
@@ -201,15 +209,17 @@ while player.dead == False:
       player.dx, player.dy = 1, 0
     elif cons.verb in ["fly", "jump"]:
       if player.room is room2:
-        cons.say("You fly across the chasm...")
+        cons.say("You spread your wings and fly across the chasm...")
         cons.say("")
         player.dy = -2
       elif player.room is room4:
-        cons.say("You fly across the chasm...")
+        cons.say("You fly back to the other side again...")
         cons.say("")
         player.dy = 2
       else:
         cons.say("There's no reason to do that now.")
+    elif cons.subj in ["fire"]:
+      cons.say("You breathe fire at nothing in particular.")
     elif cons.verb in ["quit", "q", "exit"]:
       player.dead = True
     elif cons.verb in ["help", "h", "?"]:
