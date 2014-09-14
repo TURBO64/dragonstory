@@ -182,8 +182,7 @@ while player.dead == False:
     if cons.verb in ["look", "l", "examine", "exa"]:
       if cons.subj != cons.verb:
         for item in player.room.items:
-          if cons.subj in item.name:
-            cons.describe(item)
+          cons.describe(item)
       else:
         cons.describe(player.room)
     elif cons.verb in ["take", "get"]:
