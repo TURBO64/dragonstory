@@ -12,14 +12,16 @@ from console import *
 player = Player()
 
 # -- init items --
-item_key = Item("key", True,
-"A small, black metal key with a twisted shape. When you hold it "
-"up to the light at the right angle, it seems to give off a dark, "
-"blood-red glow.")
+item_skull = Item("human skull", True,
+"An old human skull, cracked and dried out.")
 item_sword = Item("sword", True,
 "A common weapon carried by human adventurers. "
 "You have no need for weapons, and the blade is dull and chipped. "
 "It could be useful for something else, though.")
+item_key = Item("key", True,
+"A small, black metal key with a twisted shape. When you hold it "
+"up to the light at the right angle, it seems to give off a dark, "
+"blood-red glow.")
 # -- end items --
 
 # -- init events --
@@ -35,7 +37,7 @@ event_bridgedeath = Event("useitem", "death",
 
 # -- init rooms --
 room0 = Room(
-  "Lair", 1, 4, [item_key], [event_earthquake],
+  "Lair", 1, 4, [item_skull], [event_earthquake],
   "You are in a dark, filthy cave. There are charred bones and "
   "bits of rusted weaponry scattered all over the floor. At the north "
   "end of the cave is a large, open crevice in the rock wall.")
