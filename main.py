@@ -309,7 +309,6 @@ while player.dead == False:
 
 # -- end main loop --
 
+# say goodbye
+cons.say()
 cons.say("Thanks for playing!")
-
-# keep window open for ide
-input("\r\nPress any key to continue")
