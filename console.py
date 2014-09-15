@@ -19,31 +19,42 @@ class Console:
     self.reset  = '\033[0m'    # reset
     # -- end of colors
 
+    # init parser
+    self.verb, self.subj = None, None
+
   # parse user input
-  def parse(self, string):
-    words = string.split()
-    self.verb = words[0]  # what to do
-    self.subj = words[-1] # what to do it on
+  def parse(self, string=None):
+    if string:
+      words = string.split()
+      self.verb = words[0]  # first word in list
+      self.subj = words[-1] # last word
 
   # print a formatted string
-  def say(self, newmsg, color=None):    
-    fmsg = textwrap.dedent(textwrap.fill(newmsg))
-    if color != None:
-      print(color + fmsg + self.reset)
+  def say(self, newmsg=None, color=None):    
+    if newmsg:
+      fmsg = textwrap.dedent(textwrap.fill(newmsg))
+      if color != None:
+        print(color + fmsg + self.reset)
+      else:
+        print(fmsg)
     else:
-      print(fmsg)
+      print()
 
-  # describe something
+  # describe a room and list items (if any)
   def describe(self, target):
     self.say(target.name, self.white)
     self.say(target.descr)
-    self.say("")
     if target.items:
-      for x in target.items:
-        self.say("There is a " + x.name + " here.")
-        self.say("")
+      self.say()
+      if len(target.items) > 1:
+        self.say("Things that are here: ")
+        for item in target.items:
+          self.say("a " + item.name)
+      else:
+        for item in target.items:
+          self.say("There is a " + item.name + " here.")
 
   # play event
   def play(self, target):
-    self.say(target.descr)
     self.say("")
+    self.say(target.descr)

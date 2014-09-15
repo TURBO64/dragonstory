@@ -42,17 +42,17 @@ room0 = Room(
   "bits of rusted weaponry scattered all over the floor. At the north "
   "end of the cave is a large, open crevice in the rock wall.")
 room1 = Room(
-  "Tunnel", 1, 3, None, None,
+  "Tunnel", 1, 3, [], [],
   "The long winding tunnel is also littered with the remains of "
   "the human invaders. To the west you can see daylight from outside "
   "the cavern. To the south is the entrance to your lair.")
 room2 = Room(
-  "Cliff", 0, 3, None, [event_roar],
+  "Cliff", 0, 3, [], [event_roar],
   "You are now standing at the opening of the cave, on the side of a "
   "cliff. There is a rickety old rope bridge here that leads to the "
   "north. It looks rather flimsy and dangerous.")
 room3 = Room(
-  "The Bridge Of Death", 0, 2, None, [event_bridgedeath],
+  "The Bridge Of Death", 0, 2, [], [event_bridgedeath],
   "You decide to try and cross the bridge. Before you even get halfway "
   "across, you hear a loud cracking sound under your feet.")
 room4 = Room(
@@ -61,39 +61,39 @@ room4 = Room(
   "the rickety rope bridge. A worn path leads down the mountains into a "
   "forest to the north.")
 room5 = Room(
-  "Forest Entrance", 0, 0, None, [event_roar],
+  "Forest Entrance", 0, 0, [], [event_roar],
   "You're now standing near a thick forest of evergreen trees. The dirt "
   "path goes east through the woods. To the south you can see the snowy "
   "mountains where your lair is." )
 room6 = Room(
-  "Placeholder", 1, 0, None, None,
+  "Placeholder", 1, 0, [], [],
   "Filler text" )
 room7 = Room(
-  "Placeholder", 2, 0, None, None,
+  "Placeholder", 2, 0, [], [],
   "Filler text" )
 room8 = Room(
-  "Placeholder", 2, 1, None, None,
+  "Placeholder", 2, 1, [], [],
   "Filler text" )
 room9 = Room(
-  "Placeholder", 2, 2, None, None,
+  "Placeholder", 2, 2, [], [],
   "Filler text" )
 roomA = Room(
-  "Placeholder", 3, 2, None, None,
+  "Placeholder", 3, 2, [], [],
   "Filler text" )
 roomB = Room(
-  "Placeholder", 4, 2, None, None,
+  "Placeholder", 4, 2, [], [],
   "Filler text" )
 roomC = Room(
-  "Placeholder", 4, 1, None, None,
+  "Placeholder", 4, 1, [], [],
   "Filler text" )
 roomD = Room(
-  "Placeholder", 4, 0, None, None,
+  "Placeholder", 4, 0, [], [],
   "Filler text" )
 roomE = Room(
-  "Placeholder", 4, 3, None, None,
+  "Placeholder", 4, 3, [], [],
   "Filler text" )
 roomF = Room(
-  "Placeholder", 4, 4, None, None,
+  "Placeholder", 4, 4, [], [],
   "Filler text" )
 # -- end rooms --
 
@@ -174,25 +174,68 @@ while player.dead == False:
 
   # handle input (if player is alive)
   if player.dead == False:
-    cmd = input("> ").lower()
+    cmd = input("\r\n> ").lower()
     cons.parse(cmd)
 
     # -- begin command list --
 
+    # look at things
     if cons.verb in ["look", "l", "examine", "exa"]:
+      # check for subject
       if cons.subj != cons.verb:
-        for item in player.room.items:
-          cons.describe(item)
+        # check if player has items
+        if player.items:
+          # search inventory for item
+          for item in player.items:
+            if cons.subj in item.name:
+              cons.say(item.descr)
+            # check if room has items
+            elif player.room.items:
+              # search room for item
+              for item in player.room.items:
+                if cons.subj in item.name:
+                  cons.say(item.descr)
+                else:
+                  cons.say("You don't see that here.")
+            else:
+              cons.say("There is nothing here.")
+      # describe room if no target
       else:
         cons.describe(player.room)
+
+    # take items
     elif cons.verb in ["take", "get"]:
-      if player.room.items:
-        for item in player.room.items:
-          player.items.append(item)
-          player.room.items.remove(item)
-          cons.say("Taken.")
+      if cons.subj != cons.verb:
+        if player.room.items:
+          for item in player.room.items:
+            if cons.subj in item.name:
+              player.items.append(item)
+              player.room.items.remove(item)
+              cons.say("Taken.")
+            else:
+              cons.say("You don't see a " + item.name + " here.")
+        else:
+          cons.say("There is nothing here.")
       else:
-        cons.say("There is nothing here you can carry.")
+        cons.say("What do you want to take?")
+
+    # drop items
+    elif cons.verb in ["drop", "discard"]:
+      if cons.subj != cons.verb:
+        if player.items:
+          for item in player.items:
+            if cons.subj in item.name:
+              player.items.remove(item)
+              player.room.items.append(item)
+              cons.say("Dropped.")
+            else:
+              cons.say("You're not carrying a " + item.name + ".")
+        else:
+          cons.say("You don't have anything to drop.")
+      else:
+        cons.say("What do you want to drop?")
+
+    # list inventory
     elif cons.verb in ["inv", "inventory"]:
       cons.say("You are carrying: ")
       if player.items:
@@ -200,14 +243,24 @@ while player.dead == False:
           cons.say("a " + item.name)
       else:
         cons.say("Nothing.") 
+
+    # move north
     elif cons.subj in ["north", "n"]:
       player.dx, player.dy = 0, -1
+
+    # move south
     elif cons.subj in ["south", "s"]:
       player.dx, player.dy = 0, 1
+
+    # move west
     elif cons.subj in ["west", "w"]:
       player.dx, player.dy = -1, 0
+
+    # move east
     elif cons.subj in ["east", "e"]:
       player.dx, player.dy = 1, 0
+
+    # fly
     elif cons.verb in ["fly", "jump"]:
       if player.room is room2:
         cons.say("You spread your wings and fly across the chasm...")
@@ -219,20 +272,39 @@ while player.dead == False:
         player.dy = 2
       else:
         cons.say("There's no reason to do that now.")
+
+    # breathe fire
     elif cons.subj in ["fire"]:
       cons.say("You breathe fire at nothing in particular.")
+
+    # quit the game
     elif cons.verb in ["quit", "q", "exit"]:
       player.dead = True
+
+    # show help
     elif cons.verb in ["help", "h", "?"]:
       cons.say("Commands:")
-      cons.say("(n)orth, (s)outh, (w)est, (e)ast - move around")
-      cons.say("(l)ook - examine things")
       cons.say("(q)uit - quit the game")
       cons.say("(h)elp - display this list")
-    elif cons.verb in ["pos", "position"]:
-      cons.say(str(player.x) + ", " + str(player.y) )
+      cons.say("(n)orth, (s)outh, (w)est, (e)ast - move around")
+      cons.say("(l)ook [target] - examine things (or room if no target)")
+      cons.say("take [item] - pick up an item")
+
+    # print debug info
+    elif cons.verb in ["debug"]:
+      cons.say("Player X: " + str(player.x) )
+      cons.say("Player Y: " + str(player.y) )
+      cons.say("Room X: " + str(player.room.x) )
+      cons.say("Room Y: " + str(player.room.y) )
+      cons.say("Delta X: " + str(player.dx) )
+      cons.say("Delta Y: " + str(player.dy) )
+      cons.say("Parser Verb: " + cons.verb)
+      cons.say("Parser Subject: " + cons.subj)
+
+    # bad command
     else:
       cons.say("I don't understand that.")
+
     # -- end command list --
 
 # -- end main loop --
