@@ -130,8 +130,8 @@ room8 = Room(
   "the dark forest. To the south you can see a chapel on the hill.")
 room9 = Room(
   "Chapel Entrance", 2, 2, [], [],
-  "You're standing before a large chapel with huge wooden doors and stained glass
-  "windows. To the north you can see the ruined village.)
+  "You're standing before a large chapel with huge wooden doors and stained glass "
+  "windows. To the north you can see the burned cottage.")
 roomA = Room(
   "Placeholder", 3, 2, [], [],
   "Filler text" )
