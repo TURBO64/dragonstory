@@ -14,22 +14,24 @@ player = Player()
 # -- init items --
 item_skull = Item("human skull", True,
 "An old human skull, cracked and dried out.")
-item_sword = Item("sword", True,
-"A common weapon carried by human adventurers. "
-"You have no need for weapons, and the blade is dull and chipped. "
-"It could be useful for something else, though.")
-item_key = Item("key", True,
-"A small, black metal key with a twisted shape. When you hold it "
-"up to the light at the right angle, it seems to give off a dark, "
-"blood-red glow.")
+item_sign = Item("sign", False,
+"It reads: BEWARE OF DRAGON")
+item_mushroom = Item("strange mushroom", True,
+"A strange red mushroom covered in white spots.")
+item_ashes = Item("ashes", True,
+"The burnt remains of the forest troll.")
+item_shield = Item("shield", True,
+"A large wooden tower shield.")
+item_key = Item("silver key", True,
+"A small, silver key")
 # -- end items --
 
 # -- init events --
 event_roar = Event("newroom", None,
   "You hear a distant roar...")
-event_earthquake = Event("takeitem", None,
+event_earthquake = Event("newroom", None,
   "You feel the ground shake beneath your feet.")
-event_bridgedeath = Event("useitem", "death",
+event_bridgedeath = Event("oldroom", "death",
   "The rickety old bridge was never built to support the "
   "weight of a dragon. The ropes snap and you plummet into "
   "the chasm to your death.")
@@ -37,7 +39,7 @@ event_bridgedeath = Event("useitem", "death",
 
 # -- init rooms --
 room0 = Room(
-  "Lair", 1, 4, [item_skull], [event_earthquake],
+  "Lair", 1, 4, [item_skull], [],
   "You are in a dark, filthy cave. There are charred bones and "
   "bits of rusted weaponry scattered all over the floor. At the north "
   "end of the cave is a large, open crevice in the rock wall.")
@@ -47,7 +49,7 @@ room1 = Room(
   "the human invaders. To the west you can see daylight from outside "
   "the cavern. To the south is the entrance to your lair.")
 room2 = Room(
-  "Cliff", 0, 3, [], [event_roar],
+  "Cliff", 0, 3, [], [event_earthquake],
   "You are now standing at the opening of the cave, on the side of a "
   "cliff. There is a rickety old rope bridge here that leads to the "
   "north. It looks rather flimsy and dangerous.")
@@ -56,7 +58,7 @@ room3 = Room(
   "You decide to try and cross the bridge. Before you even get halfway "
   "across, you hear a loud cracking sound under your feet.")
 room4 = Room(
-  "Mountains", 0, 1, [item_sword], None,
+  "Mountains", 0, 1, [item_sign], [],
   "The steep terrain here makes it difficult to walk. To the south is "
   "the rickety rope bridge. A worn path leads down the mountains into a "
   "forest to the north.")
@@ -114,7 +116,7 @@ cons = Console()
 
 # start the game
 cons.say("Dragon Story v1.0 by zb", cons.yellow)
-cons.say("")
+cons.say()
 
 # describe room
 cons.describe(player.room)
@@ -153,15 +155,12 @@ while player.dead == False:
         if event.trigger == "random":      # when a 7 is rolled
           if random.randrange(12) == 7:
             cons.play(event)
-
-        if event.trigger == "oldroom":     # every time player enters room
-          cons.play(event)
-
-        if event.trigger == "newroom":     # first player enters room
+        elif event.trigger == "newroom":     # first player enters room
           cons.play(event)
           event.flag = True
-
-        if event.trigger == "takeitem":    # player takes an item
+        elif event.trigger == "oldroom":     # every time player enters room
+          cons.play(event)
+        elif event.trigger == "takeitem":    # player takes an item
           if player.items:
             if player.items[0].taken == True:
               cons.play(event)
@@ -169,7 +168,6 @@ while player.dead == False:
         # -- end of room triggers --
         # -- room outcomes --
         if event.outcome == "death":       # game over, man
-          cons.play(event)
           player.dead = True
 
   # handle input (if player is alive)
@@ -180,7 +178,7 @@ while player.dead == False:
     # -- begin command list --
 
     # look at things
-    if cons.verb in ["look", "l", "examine", "exa"]:
+    if cons.verb in ["look", "l", "examine", "exa", "read"]:
       # check for subject
       if cons.subj != cons.verb:
         # check if player has items
@@ -209,9 +207,12 @@ while player.dead == False:
         if player.room.items:
           for item in player.room.items:
             if cons.subj in item.name:
-              player.items.append(item)
-              player.room.items.remove(item)
-              cons.say("Taken.")
+              if item.pickup:
+                player.items.append(item)
+                player.room.items.remove(item)
+                cons.say("Taken.")
+              else:
+                cons.say("You can't pick that up.")
             else:
               cons.say("You don't see a " + item.name + " here.")
         else:
