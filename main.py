@@ -2,6 +2,8 @@
 # dragon story
 # a text adventure game where you play as a dragon
 
+from random import *
+
 from player import *
 from item import *
 from event import *
@@ -15,7 +17,7 @@ player = Player()
 item_skull = Item("human skull", True,
 "An old human skull, cracked and dried out.")
 item_sign = Item("sign", False,
-"It reads: BEWARE OF DRAGON")
+"It reads: DANGER! BEWARE OF DRAGON")
 item_mushroom = Item("strange mushroom", True,
 "A strange red mushroom covered in white spots.")
 item_ashes = Item("ashes", True,
@@ -27,24 +29,58 @@ item_key = Item("silver key", True,
 # -- end items --
 
 # -- init events --
-event_roar = Event("newroom", None,
-  "You hear a distant roar...")
-event_earthquake = Event("newroom", None,
-  "You feel the ground shake beneath your feet.")
-event_bridgedeath = Event("oldroom", "death",
+
+# example event
+# event_example = Event(
+#   trigger, outcome, solution, interactive,
+#   descr,
+#   win,
+#   lose
+# )
+
+# monster nearby
+event_growl = Event(
+  "newroom", None, None, False,
+  "You hear a distant growling sound...",
+  None, None
+)
+# random earthquakes
+event_earthquake = Event(
+  "newroom", None, None, False,
+  "You feel the ground shake beneath your feet for a moment...",
+  None, None
+)
+# bridge of death
+event_bridge = Event(
+  "room", "death", None, False,
   "The rickety old bridge was never built to support the "
   "weight of a dragon. The ropes snap and you plummet into "
-  "the chasm to your death.")
+  "the chasm to your death.",
+  None, None
+)
+# boss fight - forest troll
+event_troll = Event(
+  "newroom", None, "fire", True,
+  "As you near the bridge, you are ambushed by a huge hairy troll. "
+  "Its lips curl back revealing its huge fangs. It lets out a horrible "
+  "roar and starts charging straight at you!",
+  # if the player wins
+  "You breathe fire and engulf the forest troll in flames. In a panic, "
+  "it thrashes about and then jumps into the river and swims away",
+  # if the player loses
+  "The forest troll isn't messing around. It gives you a "
+  "thorough and brutal trouncing and then devours you whole."
+)
 # -- end events --
 
 # -- init rooms --
 room0 = Room(
-  "Lair", 1, 4, [item_skull], [],
+  "Lair", 1, 4, [], [],
   "You are in a dark, filthy cave. There are charred bones and "
   "bits of rusted weaponry scattered all over the floor. At the north "
   "end of the cave is a large, open crevice in the rock wall.")
 room1 = Room(
-  "Tunnel", 1, 3, [], [],
+  "Tunnel", 1, 3, [item_skull], [],
   "The long winding tunnel is also littered with the remains of "
   "the human invaders. To the west you can see daylight from outside "
   "the cavern. To the south is the entrance to your lair.")
@@ -54,25 +90,28 @@ room2 = Room(
   "cliff. There is a rickety old rope bridge here that leads to the "
   "north. It looks rather flimsy and dangerous.")
 room3 = Room(
-  "The Bridge Of Death", 0, 2, [], [event_bridgedeath],
+  "The Bridge Of Death", 0, 2, [], [event_bridge],
   "You decide to try and cross the bridge. Before you even get halfway "
   "across, you hear a loud cracking sound under your feet.")
 room4 = Room(
   "Mountains", 0, 1, [item_sign], [],
   "The steep terrain here makes it difficult to walk. To the south is "
-  "the rickety rope bridge. A worn path leads down the mountains into a "
+  "the treacherous rope bridge. A worn path leads down the mountains into a "
   "forest to the north.")
 room5 = Room(
-  "Forest Entrance", 0, 0, [], [event_roar],
+  "Forest Entrance", 0, 0, [], [event_growl],
   "You're now standing near a thick forest of evergreen trees. The dirt "
   "path goes east through the woods. To the south you can see the snowy "
   "mountains where your lair is." )
 room6 = Room(
-  "Placeholder", 1, 0, [], [],
-  "Filler text" )
+  "Dark Forest", 1, 0, [item_mushroom], [],
+  "The forest is very thick and overgrown here. The canopy of the trees "
+  "blocks most of the sunlight and you can't see very far. To the east "
+  "you can hear the sound of rushing water.")
 room7 = Room(
-  "Placeholder", 2, 0, [], [],
-  "Filler text" )
+  "River", 2, 0, [], [event_troll],
+  "You come across a stone bridge going over a river. At the end of the "
+  "bridge is a dirt path leading towards a village to the north.")
 room8 = Room(
   "Placeholder", 2, 1, [], [],
   "Filler text" )
@@ -124,7 +163,7 @@ cons.describe(player.room)
 # -- begin main loop --
 while player.dead == False:
   # flag current room as visited
-  player.room.flag = True
+  player.room.visited = True
   
   # check if player moved
   if player.dx != 0 or player.dy != 0:
@@ -149,31 +188,37 @@ while player.dead == False:
   # run any room events
   if player.room.events:
     for event in player.room.events:
-      if event.flag == False:
+      if event.done == False:
 
-        # -- room triggers --
-        if event.trigger == "random":      # when a 7 is rolled
-          if random.randrange(12) == 7:
+        # event triggers
+        if event.trigger == "random":        # when a 7 is rolled
+          if randrange(2) == 1:
             cons.play(event)
-        elif event.trigger == "newroom":     # first player enters room
+        elif event.trigger == "newroom":     # first time player enters room
           cons.play(event)
-          event.flag = True
-        elif event.trigger == "oldroom":     # every time player enters room
+          event.done = True
+        elif event.trigger == "room":        # every time player enters room
           cons.play(event)
-        elif event.trigger == "takeitem":    # player takes an item
-          if player.items:
-            if player.items[0].taken == True:
-              cons.play(event)
-              event.flag = True
-        # -- end of room triggers --
-        # -- room outcomes --
-        if event.outcome == "death":       # game over, man
+
+        # drop into parser for interactive events
+        if event.interactive:
+          cons.parser()
+          if event.solution in cons.subj or event.solution in cons.verb:
+            cons.say(event.win)
+            event.done = True
+          else:
+            cons.say(event.lose)
+            player.dead = True
+
+        # event outcomes
+        if event.outcome == "death":
           player.dead = True
 
   # handle input (if player is alive)
   if player.dead == False:
-    cmd = input("\r\n> ").lower()
-    cons.parse(cmd)
+
+    # run the text parser
+    cons.parser()
 
     # -- begin command list --
 
@@ -181,22 +226,17 @@ while player.dead == False:
     if cons.verb in ["look", "l", "examine", "exa", "read"]:
       # check for subject
       if cons.subj != cons.verb:
-        # check if player has items
-        if player.items:
-          # search inventory for item
-          for item in player.items:
-            if cons.subj in item.name:
-              cons.say(item.descr)
-            # check if room has items
-            elif player.room.items:
-              # search room for item
-              for item in player.room.items:
-                if cons.subj in item.name:
-                  cons.say(item.descr)
-                else:
-                  cons.say("You don't see that here.")
-            else:
-              cons.say("There is nothing here.")
+        # search inventory for item
+        for item in player.items:
+          if cons.subj in item.name:
+            cons.say(item.descr)
+          else:
+            # search room for item
+            for item in player.room.items:
+              if cons.subj in item.name:
+                cons.say(item.descr)
+              else:
+                cons.say("You don't see that here.")
       # describe room if no target
       else:
         cons.describe(player.room)
@@ -289,7 +329,11 @@ while player.dead == False:
       cons.say("(h)elp - display this list")
       cons.say("(n)orth, (s)outh, (w)est, (e)ast - move around")
       cons.say("(l)ook [target] - examine things (or room if no target)")
+      cons.say("(inv)entory - list inventory items")
       cons.say("take [item] - pick up an item")
+      cons.say("drop [item] - drop an item")
+      cons.say("fly - flight")
+      cons.say("fire - breathe fire")
 
     # print debug info
     elif cons.verb in ["debug"]:

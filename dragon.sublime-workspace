@@ -8,29 +8,29 @@
 	"buffers":
 	[
 		{
+			"contents": "#!/usr/bin/python3\n# dragon story\n# a text adventure game where you play as a dragon\n\nfrom player import *\nfrom item import *\nfrom event import *\nfrom room import *\nfrom console import *\n\n# init player\nplayer = Player()\n\n# -- init items --\nitem_skull = Item(\"human skull\", True,\n\"An old human skull, cracked and dried out.\")\nitem_sign = Item(\"sign\", False,\n\"It reads: DANGER! BEWARE OF DRAGON\")\nitem_mushroom = Item(\"strange mushroom\", True,\n\"A strange red mushroom covered in white spots.\")\nitem_ashes = Item(\"ashes\", True,\n\"The burnt remains of the forest troll.\")\nitem_shield = Item(\"shield\", True,\n\"A large wooden tower shield.\")\nitem_key = Item(\"silver key\", True,\n\"A small, silver key\")\n# -- end items --\n\n# -- init events --\nevent_roar = Event(\"newroom\", None,\n  \"You hear a distant roar...\")\nevent_earthquake = Event(\"newroom\", None,\n  \"You feel the ground shake beneath your feet.\")\nevent_bridgedeath = Event(\"oldroom\", \"death\",\n  \"The rickety old bridge was never built to support the \"\n  \"weight of a dragon. The ropes snap and you plummet into \"\n  \"the chasm to your death.\")\nevent_troll = Event(\"newroom\", \"dropitem\",\n  \"As you near the bridge, you are ambushed by a huge hairy troll. \"\n  \"Its lips curl back revealing its huge fangs. It lets out a horrible \"\n  \"roar and starts charging straight at you!\")\n# -- end events --\n\n# -- init rooms --\nroom0 = Room(\n  \"Lair\", 1, 4, [], [],\n  \"You are in a dark, filthy cave. There are charred bones and \"\n  \"bits of rusted weaponry scattered all over the floor. At the north \"\n  \"end of the cave is a large, open crevice in the rock wall.\")\nroom1 = Room(\n  \"Tunnel\", 1, 3, [item_skull], [],\n  \"The long winding tunnel is also littered with the remains of \"\n  \"the human invaders. To the west you can see daylight from outside \"\n  \"the cavern. To the south is the entrance to your lair.\")\nroom2 = Room(\n  \"Cliff\", 0, 3, [], [event_earthquake],\n  \"You are now standing at the opening of the cave, on the side of a \"\n  \"cliff. There is a rickety old rope bridge here that leads to the \"\n  \"north. It looks rather flimsy and dangerous.\")\nroom3 = Room(\n  \"The Bridge Of Death\", 0, 2, [], [event_bridgedeath],\n  \"You decide to try and cross the bridge. Before you even get halfway \"\n  \"across, you hear a loud cracking sound under your feet.\")\nroom4 = Room(\n  \"Mountains\", 0, 1, [item_sign], [],\n  \"The steep terrain here makes it difficult to walk. To the south is \"\n  \"the rickety rope bridge. A worn path leads down the mountains into a \"\n  \"forest to the north.\")\nroom5 = Room(\n  \"Forest Entrance\", 0, 0, [], [event_roar],\n  \"You're now standing near a thick forest of evergreen trees. The dirt \"\n  \"path goes east through the woods. To the south you can see the snowy \"\n  \"mountains where your lair is.\" )\nroom6 = Room(\n  \"Dark Forest\", 1, 0, [item_mushroom], [],\n  \"The forest is very thick and overgrown here. The canopy of the trees \"\n  \"blocks most of the sunlight and you can't see very far. To the east \"\n  \"you can hear the sound of rushing water.\")\nroom7 = Room(\n  \"River\", 2, 0, [], [event_troll],\n  \"You come across a stone bridge going over a river. At the end of the \"\n  \"bridge is a dirt path leading towards a village to the north.\")\nroom8 = Room(\n  \"Placeholder\", 2, 1, [], [],\n  \"Filler text\" )\nroom9 = Room(\n  \"Placeholder\", 2, 2, [], [],\n  \"Filler text\" )\nroomA = Room(\n  \"Placeholder\", 3, 2, [], [],\n  \"Filler text\" )\nroomB = Room(\n  \"Placeholder\", 4, 2, [], [],\n  \"Filler text\" )\nroomC = Room(\n  \"Placeholder\", 4, 1, [], [],\n  \"Filler text\" )\nroomD = Room(\n  \"Placeholder\", 4, 0, [], [],\n  \"Filler text\" )\nroomE = Room(\n  \"Placeholder\", 4, 3, [], [],\n  \"Filler text\" )\nroomF = Room(\n  \"Placeholder\", 4, 4, [], [],\n  \"Filler text\" )\n# -- end rooms --\n\n# -- init world --\nworld = [\n  [room5, room6, room7,  None, roomD ],\n  [room4,  None, room8,  None, roomC ],\n  [room3,  None, room9, roomA, roomB ],\n  [room2, room1,  None,  None, roomE ],\n  [ None, room0,  None,  None, roomF ]]\n# -- end world\n\n# set player location\nplayer.room = world[player.y][player.x]\n\n# init console\ncons = Console()\n\n# start the game\ncons.say(\"Dragon Story v1.0 by zb\", cons.yellow)\ncons.say()\n\n# describe room\ncons.describe(player.room)\n\n# -- begin main loop --\nwhile player.dead == False:\n  # flag current room as visited\n  player.room.flag = True\n  \n  # check if player moved\n  if player.dx != 0 or player.dy != 0:\n    # check if direction is passable\n    newx = player.x + player.dx\n    newy = player.y + player.dy\n    if newx in range(5) and newy in range(5):\n      if world[newy][newx]:\n        # move player\n        player.x += player.dx\n        player.y += player.dy\n        player.room = world[player.y][player.x]\n        # auto look\n        cons.describe(player.room)\n      else:\n        cons.say(\"You can't go that way.\")\n    else:\n      cons.say(\"You can't go that way.\")\n  # reset player deltas\n  player.dx, player.dy = 0, 0\n\n  # run any room events\n  if player.room.events:\n    for event in player.room.events:\n      if event.flag == False:\n\n        # -- room triggers --\n        if event.trigger == \"random\":        # when a 7 is rolled\n          if random.randrange(12) == 7:\n            cons.play(event)\n        elif event.trigger == \"newroom\":     # first player enters room\n          cons.play(event)\n          event.flag = True\n        elif event.trigger == \"oldroom\":     # every time player enters room\n          cons.play(event)\n        # -- end of room triggers --\n\n        # -- room outcomes --\n        if event.outcome == \"death\":         # game over\n          player.dead = True\n\n  # handle input (if player is alive)\n  if player.dead == False:\n    cons.say()\n    cmd = input(\"> \").lower()\n    cons.parse(cmd)\n\n    # -- begin command list --\n\n    # look at things\n    if cons.verb in [\"look\", \"l\", \"examine\", \"exa\", \"read\"]:\n      # check for subject\n      if cons.subj != cons.verb:\n        # check if player has items\n        if player.items:\n          # search inventory for item\n          for item in player.items:\n            if cons.subj in item.name:\n              cons.say(item.descr)\n            # check if room has items\n            elif player.room.items:\n              # search room for item\n              for item in player.room.items:\n                if cons.subj in item.name:\n                  cons.say(item.descr)\n                else:\n                  cons.say(\"You don't see that here.\")\n            else:\n              cons.say(\"There is nothing here.\")\n      # describe room if no target\n      else:\n        cons.describe(player.room)\n\n    # take items\n    elif cons.verb in [\"take\", \"get\"]:\n      if cons.subj != cons.verb:\n        if player.room.items:\n          for item in player.room.items:\n            if cons.subj in item.name:\n              if item.pickup:\n                player.items.append(item)\n                player.room.items.remove(item)\n                cons.say(\"Taken.\")\n              else:\n                cons.say(\"You can't pick that up.\")\n            else:\n              cons.say(\"You don't see a \" + item.name + \" here.\")\n        else:\n          cons.say(\"There is nothing here.\")\n      else:\n        cons.say(\"What do you want to take?\")\n\n    # drop items\n    elif cons.verb in [\"drop\", \"discard\"]:\n      if cons.subj != cons.verb:\n        if player.items:\n          for item in player.items:\n            if cons.subj in item.name:\n              player.items.remove(item)\n              player.room.items.append(item)\n              cons.say(\"Dropped.\")\n            else:\n              cons.say(\"You're not carrying a \" + item.name + \".\")\n        else:\n          cons.say(\"You don't have anything to drop.\")\n      else:\n        cons.say(\"What do you want to drop?\")\n\n    # list inventory\n    elif cons.verb in [\"inv\", \"inventory\"]:\n      cons.say(\"You are carrying: \")\n      if player.items:\n        for item in player.items:\n          cons.say(\"a \" + item.name)\n      else:\n        cons.say(\"Nothing.\") \n\n    # move north\n    elif cons.subj in [\"north\", \"n\"]:\n      player.dx, player.dy = 0, -1\n\n    # move south\n    elif cons.subj in [\"south\", \"s\"]:\n      player.dx, player.dy = 0, 1\n\n    # move west\n    elif cons.subj in [\"west\", \"w\"]:\n      player.dx, player.dy = -1, 0\n\n    # move east\n    elif cons.subj in [\"east\", \"e\"]:\n      player.dx, player.dy = 1, 0\n\n    # fly\n    elif cons.verb in [\"fly\", \"jump\"]:\n      if player.room is room2:\n        cons.say(\"You spread your wings and fly across the chasm...\")\n        cons.say(\"\")\n        player.dy = -2\n      elif player.room is room4:\n        cons.say(\"You fly back to the other side again...\")\n        cons.say(\"\")\n        player.dy = 2\n      else:\n        cons.say(\"There's no reason to do that now.\")\n\n    # breathe fire\n    elif cons.subj in [\"fire\"]:\n      if player.room.events:\n        for event in player.room.events:\n          if event == event_troll:\n            cons.say(\"You breathe fire and the troll is engulfed in flames.\")\n            \n          else:\n            cons.say(\"You breathe fire at nothing in particular.\")\n\n    # quit the game\n    elif cons.verb in [\"quit\", \"q\", \"exit\"]:\n      player.dead = True\n\n    # show help\n    elif cons.verb in [\"help\", \"h\", \"?\"]:\n      cons.say(\"Commands:\")\n      cons.say(\"(q)uit - quit the game\")\n      cons.say(\"(h)elp - display this list\")\n      cons.say(\"(n)orth, (s)outh, (w)est, (e)ast - move around\")\n      cons.say(\"(l)ook [target] - examine things (or room if no target)\")\n      cons.say(\"take [item] - pick up an item\")\n\n    # print debug info\n    elif cons.verb in [\"debug\"]:\n      cons.say(\"Player X: \" + str(player.x) )\n      cons.say(\"Player Y: \" + str(player.y) )\n      cons.say(\"Room X: \" + str(player.room.x) )\n      cons.say(\"Room Y: \" + str(player.room.y) )\n      cons.say(\"Delta X: \" + str(player.dx) )\n      cons.say(\"Delta Y: \" + str(player.dy) )\n      cons.say(\"Parser Verb: \" + cons.verb)\n      cons.say(\"Parser Subject: \" + cons.subj)\n\n    # bad command\n    else:\n      cons.say(\"I don't understand that.\")\n\n    # -- end command list --\n\n# -- end main loop --\n\n# say goodbye\ncons.say()\ncons.say(\"Thanks for playing!\")\n",
 			"file": "main.py",
+			"file_size": 10093,
+			"file_write_time": 130553009230044646,
 			"settings":
 			{
-				"buffer_size": 6695,
+				"buffer_size": 10077,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "player.py",
+			"file": "item.py",
 			"settings":
 			{
-				"buffer_size": 336,
+				"buffer_size": 151,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "class Room:\n  def __init__(self, name, x, y, items, events, descr):\n    self.name = name\n    self.x, self.y = x, y\n\n      },\n\n    }\n  def run_events(self):\n    for x in events:\n      if x.flag == False:\n        x.trigger()\n",
 			"file": "room.py",
-			"file_size": 277,
-			"file_write_time": 130550537060991218,
 			"settings":
 			{
-				"buffer_size": 223,
+				"buffer_size": 277,
 				"line_ending": "Unix"
 			}
 		},
@@ -38,7 +38,15 @@
 			"file": "console.py",
 			"settings":
 			{
-				"buffer_size": 1282,
+				"buffer_size": 1588,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "player.py",
+			"settings":
+			{
+				"buffer_size": 157,
 				"line_ending": "Unix"
 			}
 		},
@@ -47,14 +55,6 @@
 			"settings":
 			{
 				"buffer_size": 158,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "item.py",
-			"settings":
-			{
-				"buffer_size": 148,
 				"line_ending": "Unix"
 			}
 		}
@@ -86,6 +86,7 @@
 	},
 	"file_history":
 	[
+		"/home/zb/Documents/dragonstory/player.py",
 		"/home/zb/.config/sublime-text-3/Packages/User/Python3.sublime-build",
 		"/home/zb/.config/sublime-text-3/Packages/User/python3.sublime-build",
 		"/home/zb/Documents/dragon/main.py",
@@ -127,6 +128,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"position",
+			"carry",
 			"input",
 			"describe_room",
 			"room_ca",
@@ -213,7 +216,7 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -222,15 +225,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6695,
+						"buffer_size": 10077,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1120,
-								1120
+								8929,
+								8929
 							]
 						],
 						"settings":
@@ -240,34 +243,32 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 325.0,
+						"translation.y": 3601.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "player.py",
+					"file": "item.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 336,
+						"buffer_size": 151,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								52,
+								52
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/Python/Python.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -282,45 +283,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 223,
+						"buffer_size": 277,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								115,
-								115
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "console.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1282,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								589,
-								589
+								185,
+								185
 							]
 						],
 						"settings":
@@ -337,7 +308,65 @@
 					"type": "text"
 				},
 				{
+					"buffer": 3,
+					"file": "console.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1588,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1174,
+								1174
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 156.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
 					"buffer": 4,
+					"file": "player.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 157,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
 					"file": "event.py",
 					"semi_transient": false,
 					"settings":
@@ -361,35 +390,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "item.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 148,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
+					"stack_index": 1,
 					"type": "text"
 				}
 			]

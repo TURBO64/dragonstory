@@ -23,9 +23,11 @@ class Console:
     self.verb, self.subj = None, None
 
   # parse user input
-  def parse(self, string=None):
-    if string:
-      words = string.split()
+  def parser(self):
+    self.say()
+    cmd = input("> ").lower()
+    if cmd:
+      words = cmd.split()
       self.verb = words[0]  # first word in list
       self.subj = words[-1] # last word
 
