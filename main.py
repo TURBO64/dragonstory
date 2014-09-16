@@ -88,68 +88,86 @@ room0 = Room(
   "Lair", 1, 4, [], [],
   "You are in a dark, filthy cave. There are charred bones and "
   "bits of rusted weaponry scattered all over the floor. At the north "
-  "end of the cave is a large, open crevice in the rock wall.")
+  "end of the cave is a large, open crevice in the rock wall."
+ )
 room1 = Room(
   "Tunnel", 1, 3, [item_skull], [],
   "The long winding tunnel is also littered with the remains of "
   "the human invaders. To the west you can see daylight from outside "
-  "the cavern. To the south is the entrance to your lair.")
+  "the cavern. To the south is the entrance to your lair."
+)
 room2 = Room(
   "Cliff", 0, 3, [], [event_earthquake],
   "You are now standing at the opening of the cave, on the side of a "
   "cliff. There is a rickety old rope bridge here that leads to the "
-  "north. It looks rather flimsy and dangerous.")
+  "north. It looks rather flimsy and dangerous."
+)
 room3 = Room(
   "The Bridge Of Death", 0, 2, [], [event_bridge],
   "You decide to try and cross the bridge. Before you even get halfway "
-  "across, you hear a loud cracking sound under your feet.")
+  "across, you hear a loud cracking sound under your feet."
+)
 room4 = Room(
   "Mountains", 0, 1, [item_sign], [],
   "The steep terrain here makes it difficult to walk. To the south is "
   "the treacherous rope bridge. A worn path leads down the mountains into a "
-  "forest to the north.")
+  "forest to the north."
+)
 room5 = Room(
   "Forest Entrance", 0, 0, [], [event_growl],
   "You're now standing near a thick forest of evergreen trees. The dirt "
   "path goes east through the woods. To the south you can see the snowy "
-  "mountains where your lair is." )
+  "mountains where your lair is."
+)
 room6 = Room(
   "Dark Forest", 1, 0, [item_mushroom], [],
   "The forest is very thick and overgrown here. The canopy of the trees "
   "blocks most of the sunlight and you can't see very far. To the east "
-  "you can hear the sound of rushing water.")
+  "you can hear the sound of rushing water."
+)
 room7 = Room(
   "River", 2, 0, [], [event_troll],
   "You are standing before a stone bridge going over a river. At the end of the "
-  "bridge is a dirt path leading towards a burned-out cottage to the south.")
+  "bridge is a dirt path leading towards a village to the south."
+)
 room8 = Room(
-  "Burned Cottage", 2, 1, [item_shield], [],
+  "Ruined Village", 2, 1, [], [],
+  "The tiny hamlet lies in ruin from your last visit and seems to be "
+  "completely deserted. You see a small, partially-burned cottage to "
+  "the south. To the north lies the dark forest."
+)
+room9 = Room(
+  "Burned Cottage", 2, 2, [item_shield], [],
   "This is the only house that's still standing in the ruined village. "
   "An ornate coat of arms is hung on the rock wall above the ruined bed. "
-  "At the other end of the room is a large wooden desk. To the north lies "
-  "the dark forest. To the south you can see a chapel on the hill.")
-room9 = Room(
-  "Chapel Entrance", 2, 2, [], [],
-  "You're standing before a large chapel with huge wooden doors and stained glass "
-  "windows. To the north you can see the burned cottage.")
+  "At the other end of the room is a large wooden desk. To the east is "
+  "a large chapel with a cross on the roof."
+)
 roomA = Room(
-  "Placeholder", 3, 2, [], [],
-  "Filler text" )
+  "Chapel Entrance", 3, 2, [], [],
+  "You're standing before a large chapel with stained glass windows. "
+  "The front entrance is to the east. To the west is the burned cottage."
+)
 roomB = Room(
   "Placeholder", 4, 2, [], [],
-  "Filler text" )
+  "Filler text"
+)
 roomC = Room(
   "Placeholder", 4, 1, [], [],
-  "Filler text" )
+  "Filler text"
+)
 roomD = Room(
   "Placeholder", 4, 0, [], [],
-  "Filler text" )
+  "Filler text"
+)
 roomE = Room(
   "Placeholder", 4, 3, [], [],
-  "Filler text" )
+  "Filler text"
+)
 roomF = Room(
   "Placeholder", 4, 4, [], [],
-  "Filler text" )
+  "Filler text"
+)
 # -- end rooms --
 
 # -- init world --
@@ -158,7 +176,8 @@ world = [
   [room4,  None, room8,  None, roomC ],
   [room3,  None, room9, roomA, roomB ],
   [room2, room1,  None,  None, roomE ],
-  [ None, room0,  None,  None, roomF ]]
+  [ None, room0,  None,  None, roomF ]
+]
 # -- end world
 
 # set player location
