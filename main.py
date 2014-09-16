@@ -34,8 +34,8 @@ item_key = Item("silver key", True,
 # event_example = Event(
 #   trigger, outcome, solution, interactive,
 #   descr,
-#   win,
-#   lose
+#   win, (optional)
+#   lose (optional)
 # )
 
 # monster nearby
@@ -58,15 +58,25 @@ event_bridge = Event(
   "the chasm to your death.",
   None, None
 )
+# mushroom death
+event_mushroom = Event(
+  "room", "death", None, False,
+  "You eat the strange mushroom. Whoops! That mushroom was "
+  "extremely poisonous! You begin to hallucinate and feel very "
+  "sick to your stomach. After a while, you succumb to the deadly "
+  "poison. Didn't anyone tell you not to eat wild mushrooms?",
+  None, None
+)
 # boss fight - forest troll
 event_troll = Event(
-  "newroom", None, "fire", True,
+  "newroom", None, ["fire", "breathe"], True,
   "As you near the bridge, you are ambushed by a huge hairy troll. "
   "Its lips curl back revealing its huge fangs. It lets out a horrible "
   "roar and starts charging straight at you!",
   # if the player wins
   "You breathe fire and engulf the forest troll in flames. In a panic, "
-  "it thrashes about and then jumps into the river and swims away",
+  "it thrashes about wildly for a moment and then jumps into the river "
+  "and swims away.",
   # if the player loses
   "The forest troll isn't messing around. It gives you a "
   "thorough and brutal trouncing and then devours you whole."
@@ -110,14 +120,18 @@ room6 = Room(
   "you can hear the sound of rushing water.")
 room7 = Room(
   "River", 2, 0, [], [event_troll],
-  "You come across a stone bridge going over a river. At the end of the "
-  "bridge is a dirt path leading towards a village to the north.")
+  "You are standing before a stone bridge going over a river. At the end of the "
+  "bridge is a dirt path leading towards a burned-out cottage to the south.")
 room8 = Room(
-  "Placeholder", 2, 1, [], [],
-  "Filler text" )
+  "Burned Cottage", 2, 1, [item_shield], [],
+  "This is the only house that's still standing in the ruined village. "
+  "An ornate coat of arms is hung on the rock wall above the ruined bed. "
+  "At the other end of the room is a large wooden desk. To the north lies "
+  "the dark forest. To the south you can see a chapel on the hill.")
 room9 = Room(
-  "Placeholder", 2, 2, [], [],
-  "Filler text" )
+  "Chapel Entrance", 2, 2, [], [],
+  "You're standing before a large chapel with huge wooden doors and stained glass
+  "windows. To the north you can see the ruined village.)
 roomA = Room(
   "Placeholder", 3, 2, [], [],
   "Filler text" )
@@ -189,26 +203,22 @@ while player.dead == False:
   if player.room.events:
     for event in player.room.events:
       if event.done == False:
-
         # event triggers
-        if event.trigger == "random":        # when a 7 is rolled
-          if randrange(2) == 1:
-            cons.play(event)
-        elif event.trigger == "newroom":     # first time player enters room
+        if event.trigger == "newroom":     # first time player enters room
           cons.play(event)
           event.done = True
         elif event.trigger == "room":        # every time player enters room
           cons.play(event)
 
-        # drop into parser for interactive events
+        # drop into the parser for interactive events
         if event.interactive:
           cons.parser()
-          if event.solution in cons.subj or event.solution in cons.verb:
+          if cons.verb in event.solutions:
             cons.say(event.win)
             event.done = True
           else:
             cons.say(event.lose)
-            player.dead = True
+            event.outcome = "death"
 
         # event outcomes
         if event.outcome == "death":
@@ -230,13 +240,12 @@ while player.dead == False:
         for item in player.items:
           if cons.subj in item.name:
             cons.say(item.descr)
+        # search room for item
+        for item in player.room.items:
+          if cons.subj in item.name:
+            cons.say(item.descr)
           else:
-            # search room for item
-            for item in player.room.items:
-              if cons.subj in item.name:
-                cons.say(item.descr)
-              else:
-                cons.say("You don't see that here.")
+            cons.say("You don't see that here.")
       # describe room if no target
       else:
         cons.describe(player.room)
@@ -317,6 +326,11 @@ while player.dead == False:
     # breathe fire
     elif cons.subj in ["fire"]:
       cons.say("You breathe fire at nothing in particular.")
+
+    # eat mushroom
+    elif cons.verb in ["eat"]:
+      if cons.subj in ["mushroom"]:
+        player.room.events.append(event_mushroom)
 
     # quit the game
     elif cons.verb in ["quit", "q", "exit"]:
