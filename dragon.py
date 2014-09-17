@@ -192,13 +192,13 @@ while newgame:
   # introduction
   cons.say("Prologue", cons.white)
   cons.say(
-  "The great war is over and the land lies in ruin. You are the last of the "
-  "dragons - your brethren have all been hunted down and slain by the human "
-  "marauders. They have invaded your land and taken everything from you. "
-  "The only hope left for your species is kept locked away in the great "
-  "Wizard's Tower - the sole remaining dragon egg. Will you defeat the evil "
-  "humans, storm the Wizard's Tower, and save the dragon race from certain "
-  "extinction?"
+  "The great war is over and the land lies in ruin. You are the last "
+  "of the dragons - your brethren have all been hunted down and slain by the "
+  "human marauders. With their weapons and magic, they invaded and conquered "
+  "your realm and the only hope left for your race is locked away in the "
+  "great Wizard's Tower - the sole remaining dragon egg. Will you defeat the "
+  "evil humans, recover the egg from the Wizard's Tower, and save your people "
+  "from certain extinction?"
   )
   # title screen
   cons.puts(r"""
