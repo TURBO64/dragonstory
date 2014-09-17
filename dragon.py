@@ -192,11 +192,13 @@ while newgame:
   # introduction
   cons.say("Prologue", cons.white)
   cons.say(
-  "The great war is over. Your dragon brethren have all been hunted down and slain "
-  "by the human marauders. They have invaded your land and taken everything from you. "
-  "The only remaining hope for all of dragonkind is kept locked away in the Wizard's "
-  "Tower - the sole remaining dragon egg. Will you defeat the evil humans, storm the "
-  "Wizard's Tower, and save your species from certain extinction?"
+  "The great war is over and the land lies in ruin. You are the last of the "
+  "dragons - your brethren have all been hunted down and slain by the human "
+  "marauders. They have invaded your land and taken everything from you. "
+  "The only hope left for your species is kept locked away in the great "
+  "Wizard's Tower - the sole remaining dragon egg. Will you defeat the evil "
+  "humans, storm the Wizard's Tower, and save the dragon race from certain "
+  "extinction?"
   )
   # title screen
   cons.puts(r"""
@@ -388,8 +390,8 @@ while newgame:
 
       # quit the game
       elif cons.verb in ["quit", "q", "exit"]:
-        player.dead = True
-        player.newgame = False
+        newgame = False
+        break
 
       # show help
       elif cons.verb in ["help", "h", "?"]:
@@ -418,23 +420,19 @@ while newgame:
       # bad command
       else:
         cons.say("I don't understand that.")
+      # ---- end command list ----
 
-      # -- end command list --
-
-  # -- end main loop --
-
-  # game over
-  print()
-  cons.say("Game over.")
+  # ---- end main loop ----
 
   # ask if player wants to play again
-  print()
-  cons.say("Play again? (y or n)")
-  cons.parser()
-  if cons.subj in ["y", "yes"]:
-    newgame = True
-  else:
-    newgame = False
+  if newgame:
+    print()
+    cons.say("Play again? (y or n)")
+    cons.parser()
+    if cons.subj in ["y", "yes"]:
+      newgame = True
+    else:
+      newgame = False
 
 # -- end of restart loop --
 
