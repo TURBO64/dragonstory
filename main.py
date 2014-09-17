@@ -1,62 +1,51 @@
 #!/usr/bin/python3
-# dragon story
-# a text adventure game where you play as a dragon
+# Dragon Story v1.1 by zb
+# A fantasy text adventure game where YOU are the dragon!
 
 import os
 import sys
-import time
-import random
 
+from console import *
 from player import *
 from item import *
 from event import *
 from room import *
-from console import *
 
-# init player
+# init console and player
+cons = Console()
 player = Player()
 
-# init console
-cons = Console()
-
-# -- init items --
+# ---- init all items ----
 item_skull = Item("human skull", True,
 "An old human skull, cracked and dried out.")
+
 item_sign = Item("sign", False,
 "It reads: DANGER! BEWARE OF DRAGON")
+
 item_mushroom = Item("strange mushroom", True,
 "A strange red mushroom covered in white spots.")
+
 item_ashes = Item("ashes", True,
 "The burnt remains of the forest troll.")
+
 item_shield = Item("shield", True,
 "A large wooden tower shield.")
+
 item_key = Item("silver key", True,
 "A small, silver key")
-# -- end items --
+# ---- end of items ----
 
-# -- init events --
-
-# example event
-# event_example = Event(
-#   trigger, outcome, solution, interactive,
-#   descr,
-#   win, (optional)
-#   lose (optional)
-# )
-
-# monster nearby
+# ---- init all events ----
 event_growl = Event(
   "newroom", None, None, False,
   "You hear a distant growling sound...",
   None, None
 )
-# random earthquakes
 event_earthquake = Event(
   "newroom", None, None, False,
   "You feel the ground shake beneath your feet for a moment...",
   None, None
 )
-# bridge of death
 event_bridge = Event(
   "room", "death", None, False,
   "The rickety old bridge was never built to support the "
@@ -64,7 +53,6 @@ event_bridge = Event(
   "the chasm to your death.",
   None, None
 )
-# mushroom death
 event_mushroom = Event(
   "room", "death", None, False,
   "You eat the strange mushroom. Whoops! That mushroom was "
@@ -73,23 +61,22 @@ event_mushroom = Event(
   "poison. Didn't anyone tell you not to eat wild mushrooms?",
   None, None
 )
-# boss fight - forest troll
 event_troll = Event(
   "newroom", None, ["fire", "breathe"], True,
-  "As you near the bridge, you are ambushed by a huge hairy troll. "
-  "Its lips curl back revealing its huge fangs. It lets out a horrible "
-  "roar and starts charging straight at you!",
+  "As you near the bridge, you are ambushed by a huge, hairy troll. "
+  "Its lips curl back revealing its large blood-stained fangs. Suddenly, "
+  "it lets out a horrible roar and starts charging straight at you!",
   # if the player wins
-  "You breathe fire and engulf the forest troll in flames. In a panic, "
-  "it thrashes about wildly for a moment and then jumps into the river "
-  "and swims away.",
+  "With all your might, you breathe forth a large plume of fire and engulf "
+  "the forest troll in flames. The beast thrashes about wildly for a moment "
+  "and then jumps into the river and swims away, defeated.",
   # if the player loses
-  "The forest troll isn't messing around. It gives you a "
-  "thorough and brutal trouncing and then devours you whole."
+  "The forest troll isn't messing around. The giant monster gives you a "
+  "thorough and brutal trouncing and then devours your body whole."
 )
-# -- end events --
+# ---- end of events ----
 
-# -- init rooms --
+# ---- init all rooms ----
 room0 = Room(
   "Lair", 1, 4, [], [],
   "You are in a dark, filthy cave. There are charred bones and "
@@ -174,9 +161,9 @@ roomF = Room(
   "Placeholder", 4, 4, [], [],
   "Filler text"
 )
-# -- end rooms --
+# ---- end of rooms ----
 
-# -- init world --
+# ---- init world ----
 world = [
   [room5, room6, room7,  None, roomD ],
   [room4,  None, room8,  None, roomC ],
@@ -184,13 +171,36 @@ world = [
   [room2, room1,  None,  None, roomE ],
   [ None, room0,  None,  None, roomF ]
 ]
-# -- end world
+# ---- end of world ----
 
-# -------------------- end of inits --------------------
+# ---- game start ----
 
-# start the game
-cons.say("Dragon Story v1.1 by zb", cons.yellow)
-cons.say()
+# clear screen on windows
+os.system('cls')
+
+# clear screen on unix
+os.system('clear')
+
+# introduction
+cons.say("Prologue", cons.white)
+cons.say("""\
+The great war is over. Your dragon brethren have all been hunted down and slain by the human marauders. They have invaded your land and taken everything from you. The only remaining hope for all of dragonkind is kept locked away in the Wizard's Tower - the sole remaining dragon egg. Will you defeat the evil humans, storm the Wizard's Tower, and save your species from certain extinction?"""
+)
+# title screen
+cons.puts(r"""
+   |\                                          ,
+    \\          _     _                       ||
+   / \\ ,._-_  < \,  / \\  /'\\ \\/\\   _-_, =||=  /'\\ ,._-_ '\\/\\
+  || ||  ||    /-|| || || || || || ||  ||_.   ||  || ||  ||    || ;
+  || ||  ||   (( || || || || || || ||   ~ ||  ||  || ||  ||    ||/
+   \\/   \\,   \/\\ \\_-| \\,/  \\ \\  ,-_-   \\, \\,/   \\,   |/
+                     /  \                                     (
+                    '----`                                     -_-
+  """, cons.yellow)
+cons.puts(
+  "                             "
+  "- a text adventure game by zb", cons.brown)
+print()
 
 # set player location
 player.room = world[player.y][player.x]
@@ -198,7 +208,8 @@ player.room = world[player.y][player.x]
 # describe room
 cons.describe(player.room)
 
-# -- begin main loop --
+# ---- main loop ----
+
 while player.dead == False:
   # flag current room as visited
   player.room.visited = True

@@ -12,6 +12,7 @@ class Console:
     self.black  = '\033[1;30m' # black
     self.red    = '\033[1;31m' # red
     self.green  = '\033[1;32m' # green
+    self.brown  = '\033[0;33m' #
     self.yellow = '\033[1;33m' # yellow
     self.blue   = '\033[1;34m' # blue
     self.purple = '\033[1;35m' # purple
@@ -31,10 +32,20 @@ class Console:
       self.verb = words[0]  # first word in list
       self.subj = words[-1] # last word
 
-  # print a formatted string
+  # print raw string
+  def puts(self, newmsg=None, color=None):    
+    if newmsg:
+      if color != None:
+        print(color + newmsg + self.reset, end="")
+      else:
+        print(newmsg, end="")
+    else:
+      print()
+
+  # print formatted string
   def say(self, newmsg=None, color=None):    
     if newmsg:
-      fmsg = textwrap.dedent(textwrap.fill(newmsg))
+      fmsg = textwrap.dedent(textwrap.fill(newmsg, width=70))
       if color != None:
         print(color + fmsg + self.reset)
       else:
