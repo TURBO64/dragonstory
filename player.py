@@ -5,3 +5,4 @@ class Player:
     self.items  = []
     self.x, self.y = 1, 4
     self.dx, self.dy = 0, 0
+    self.newgame = True

@@ -2,7 +2,10 @@
 # dragon story
 # a text adventure game where you play as a dragon
 
-from random import *
+import os
+import sys
+import time
+import random
 
 from player import *
 from item import *
@@ -12,6 +15,9 @@ from console import *
 
 # init player
 player = Player()
+
+# init console
+cons = Console()
 
 # -- init items --
 item_skull = Item("human skull", True,
@@ -180,15 +186,14 @@ world = [
 ]
 # -- end world
 
-# set player location
-player.room = world[player.y][player.x]
-
-# init console
-cons = Console()
+# -------------------- end of inits --------------------
 
 # start the game
-cons.say("Dragon Story v1.0 by zb", cons.yellow)
+cons.say("Dragon Story v1.1 by zb", cons.yellow)
 cons.say()
+
+# set player location
+player.room = world[player.y][player.x]
 
 # describe room
 cons.describe(player.room)
@@ -256,15 +261,19 @@ while player.dead == False:
       # check for subject
       if cons.subj != cons.verb:
         # search inventory for item
-        for item in player.items:
-          if cons.subj in item.name:
-            cons.say(item.descr)
-        # search room for item
-        for item in player.room.items:
-          if cons.subj in item.name:
-            cons.say(item.descr)
-          else:
-            cons.say("You don't see that here.")
+        if player.items:
+          for item in player.items:
+            if cons.subj in item.name:
+              cons.say(item.descr)
+            # search room for item
+            elif player.room.items:
+              for item in player.room.items:
+                if cons.subj in item.name:
+                  cons.say(item.descr)
+            else:
+              cons.say("You don't see a " + cons.subj + " here.")
+        else:
+          cons.say("You don't see a " + cons.subj + " here.")
       # describe room if no target
       else:
         cons.describe(player.room)
@@ -282,9 +291,9 @@ while player.dead == False:
               else:
                 cons.say("You can't pick that up.")
             else:
-              cons.say("You don't see a " + item.name + " here.")
+              cons.say("You don't see a " + cons.subj + " here.")
         else:
-          cons.say("There is nothing here.")
+          cons.say("You don't see a " + cons.subj + " here.")
       else:
         cons.say("What do you want to take?")
 
@@ -354,6 +363,7 @@ while player.dead == False:
     # quit the game
     elif cons.verb in ["quit", "q", "exit"]:
       player.dead = True
+      player.newgame = False
 
     # show help
     elif cons.verb in ["help", "h", "?"]:
@@ -390,3 +400,14 @@ while player.dead == False:
 # say goodbye
 cons.say()
 cons.say("Thanks for playing!")
+
+# ask if player wants to play again
+if player.newgame == True:
+  cons.say()
+  cons.say("Play again? (y or n)")
+  cons.parser()
+  if cons.subj == "y":
+    os.execv(__file__, sys.argv)
+
+# keep window open on quit
+input("Press any key to continue")
